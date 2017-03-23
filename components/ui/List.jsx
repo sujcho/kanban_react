@@ -8,9 +8,15 @@ export default class List extends React.Component {
             (card) =>
                 <Card
                     key = {card.id}
+                    id = {card.get('id')}
                     title = {card.title}
                     description = {card.description}
-                    tasks = {card.tasks}
+                    tasks = {card.get('tasks')}
+                    addTask = {this.props.addTask}
+                    toggleTask = {this.props.toggleTask}
+                    removeTask = {this.props.removeTask}
+                    
+                    openDraft = {this.props.openDraft}
                 />
         )
         return(
