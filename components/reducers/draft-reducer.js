@@ -42,7 +42,14 @@ export function reduce(state = createInitialState(), action) {
             });
                 
             return new DraftStateRecord();
-
+        case CLOSE_DRAFT:
+            return createInitialState();
+            
+        case UPDATE_DRAFT:
+            const field = action.payload.field;
+            const value = action.payload.value;
+            
+            return state.setIn(['draft', field], value);
             
         default:
             return state;

@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import * as TaskActions from './actions/task-actions';
 import * as DraftActions from './actions/draft-actions';
+import * as CardActions from './actions/card-actions';
 import App from './ui/App.jsx';
 
 const mapStateToProps = (state) => {
@@ -24,6 +25,23 @@ const mapDispatchToProps = (dispatch) => {
         /*** for draft ***/ 
         openDraft: (cardObj) => {
             dispatch(DraftActions.open(cardObj));
+        },
+        closeDraft: () => {
+            dispatch(DraftActions.close());
+        },
+        updateDraft: (field, value) => {
+            dispatch(DraftActions.update(field, value));
+        },
+        
+        /*** for cards **/
+        addCard: (cardObj) => {
+            dispatch(CardActions.add(cardObj));  
+        },
+        updateCard: (cardObj) => {
+           dispatch(CardActions.update(cardObj));
+        },
+        removeCard: (cardId) => {
+            dispatch(CardActions.remove(cardId));
         }
     }
 }

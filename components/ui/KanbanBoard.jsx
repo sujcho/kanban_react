@@ -6,7 +6,11 @@ export default class KanbanBoard extends React.Component {
     render() {
         return (
             <div>
-                <div className = "float-button"
+                <div 
+                    className = "float-button"
+                    onClick = {
+                        (evt) => this.props.openDraft()
+                    }
                 >+</div>
                 <List
                     title = "To Do"
@@ -20,6 +24,8 @@ export default class KanbanBoard extends React.Component {
                     removeTask = {this.props.removeTask}
                     
                     openDraft = {this.props.openDraft}
+                    removeCard = {this.props.removeCard}
+                    
 
                 />
                 <List
@@ -34,6 +40,7 @@ export default class KanbanBoard extends React.Component {
                     removeTask = {this.props.removeTask}
                     
                     openDraft = {this.props.openDraft}
+                    removeCard = {this.props.removeCard}
                 />
                 <List
                     title = "Done"
@@ -47,6 +54,7 @@ export default class KanbanBoard extends React.Component {
                     removeTask = {this.props.removeTask}
                     
                     openDraft = {this.props.openDraft}
+                    removeCard = {this.props.removeCard}
                 />
             </div>
         )

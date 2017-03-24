@@ -7,16 +7,18 @@ export default class List extends React.Component {
         const cards = this.props.cards.map(
             (card) =>
                 <Card
-                    key = {card.id}
-                    id = {card.get('id')}
-                    title = {card.title}
-                    description = {card.description}
+                    key = {card.get('id')}
+                    card_id = {card.get('id')}
+                    title = {card.get('title')}
+                    description = {card.get('description')}
+                    status = {card.get('status')}
                     tasks = {card.get('tasks')}
                     addTask = {this.props.addTask}
                     toggleTask = {this.props.toggleTask}
                     removeTask = {this.props.removeTask}
-                    
+                 
                     openDraft = {this.props.openDraft}
+                    removeCard = {this.props.removeCard}
                 />
         )
         return(

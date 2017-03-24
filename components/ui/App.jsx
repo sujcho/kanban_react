@@ -18,6 +18,8 @@ export default class App extends React.Component {
                     removeTask = {this.props.removeTask}
                     
                     openDraft = {this.props.openDraft}
+                    
+                    removeCard = {this.props.removeCard}
                  />
                  {
                     this.props.draft.get('show')

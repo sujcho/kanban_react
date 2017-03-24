@@ -47,7 +47,7 @@ export default class Card extends React.Component {
                         onClick = {
                             (evt) => {
                                 this.props.openDraft({
-                                    id: this.props.id,
+                                    id: this.props.card_id,
                                     title: this.props.title,
                                     description: this.props.description,
                                     status: this.props.status
@@ -58,6 +58,11 @@ export default class Card extends React.Component {
                     {"  "}
                     <span
                         className = "fa fa-times remove-icon"
+                        onClick = {
+                            (evt) => {
+                                this.props.removeCard(this.props.card_id)
+                            }
+                        }
                     ></span>
                 </div>
                 <div className = { this.state.showDetails ? "card_title_is_open" : "card_title" }

@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 import uuid from 'node-uuid';
 
 import { ADD_TASK, TOGGLE_TASK, REMOVE_TASK } from '../actions/task-actions';
+import {ADD_CARD, UPDATE_CARD, REMOVE_CARD} from '../actions/card-actions';
 
 const kanbanState = [
     {
@@ -114,7 +115,37 @@ export function reduce(state=createInitialState(),action){
             );
             
             return state.deleteIn([cardIndex, 'tasks', taskIndex]);
+        /**** for card **/
         
+        case ADD_CARD:
+            card = action.payload;
+            
+            const CardRecord = Immutable.Record({
+                id: uuid.v4(),
+                title: card.title,
+                description: card.description,
+                status: card.status,
+                tasks: Immutable.List()
+            });
+            return state.push(new CardRecord());
+            
+        case UPDATE_CARD:
+            card = action.payload;
+            cardIndex = state.findIndex(
+                (c) => c.get('id') === card.id
+            );
+            
+            return state.setIn([cardIndex, 'title'], card.title)
+                 .setIn([cardIndex, 'description'], card.description)
+                 .setIn([cardIndex, 'status'], card.status);
+            
+        case REMOVE_CARD:
+            cardId = action.payload;
+            cardIndex = state.findIndex(
+                (c) => c.get('id') === cardId
+            );
+            return state.delete(cardIndex);
+            
         default:
             return state;
 
