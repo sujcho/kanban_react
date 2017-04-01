@@ -1,8 +1,8 @@
 import Immutable from 'immutable';
 import uuid from 'node-uuid';
 
-import { ADD_TASK, TOGGLE_TASK, REMOVE_TASK } from '../actions/task-actions';
-import {ADD_CARD, UPDATE_CARD, REMOVE_CARD} from '../actions/card-actions';
+import {TOGGLE_TASK, REMOVE_TASK, ADD_TASK_SUCCESS } from '../actions/task-actions';
+import {FETCH_CARDS_SUCCESS, ADD_CARD_SUCCESS, UPDATE_CARD_SUCCESS, REMOVE_CARD_SUCCESS} from '../actions/card-actions';
 
 const kanbanState = [
     {
@@ -45,17 +45,28 @@ const kanbanState = [
 ]
 
 function createInitialState() {
-    const cards = kanbanState.map(
+    return Immutable.List();
+}
+
+function processResponse(response){
+    const cards = response.map(
         (card) => {
             const tasks = card.tasks.map(
                 (task) => {
-                    const TaskRecord = Immutable.Record(task);
+                    const TaskRecord = Immutable.Record(
+                        Object.assign({}, task, {
+                            id: task._id,
+                            _id: undefined
+                        })
+                    );
                     return new TaskRecord();
                 }
             )
             
             const CardRecord = Immutable.Record(
                 Object.assign({}, card, {
+                    id: card._id,
+                    _id: undefined,
                     tasks: Immutable.List(tasks)
                 })
             );
@@ -69,14 +80,22 @@ export function reduce(state=createInitialState(),action){
     let cardId, taskId, cardIndex, taskIndex, card, task;
 
     switch(action.type){
-        case ADD_TASK:
-            cardId = action.payload.cardId;
-            const taskName = action.payload.taskName;
+        case FETCH_CARDS_SUCCESS:
+            return processResponse(action.payload);
+         
+          
+        case ADD_TASK_SUCCESS:
             
-            const TaskRecord = Immutable.Record({
-                id: uuid.v4(),
-                name: taskName,
-            });
+            card = action.payload;
+            const taskName = action.payload.taskName;
+  
+            const TaskRecord = Immutable.Record(
+                Object.assign({},action.payload,{
+                    id:action.payload._id,
+                    _id: undefined,
+                    name:action.payload.name
+                })
+            );
             task = new TaskRecord();
             
             cardIndex = state.findIndex(
@@ -85,6 +104,27 @@ export function reduce(state=createInitialState(),action){
             card = state.get(cardIndex);
             return state.setIn([cardIndex, 'tasks'], card.get('tasks').push(task));
             
+        /*
+        case ADD_TASK:
+            cardId = action.payload.cardId;
+            const taskName = action.payload.taskName;
+            
+            const TaskRecord = Immutable.Record({
+                id: uuid.v4(),
+                name: taskName,
+                done: false
+            });
+            
+            task = new TaskRecord();
+            
+            cardIndex = state.findIndex(
+                (c) => c.get('id') === cardId
+            );
+            card = state.get(cardIndex);
+            
+            return state.setIn([cardIndex, 'tasks'], card.get('tasks').push(task));
+        */
+        
         case TOGGLE_TASK:
             cardId = action.payload.cardId;
             taskId = action.payload.taskId;
@@ -115,21 +155,26 @@ export function reduce(state=createInitialState(),action){
             );
             
             return state.deleteIn([cardIndex, 'tasks', taskIndex]);
-        /**** for card **/
-        
-        case ADD_CARD:
-            card = action.payload;
             
-            const CardRecord = Immutable.Record({
-                id: uuid.v4(),
-                title: card.title,
-                description: card.description,
-                status: card.status,
-                tasks: Immutable.List()
-            });
+        /**** for card **/
+        case ADD_CARD_SUCCESS:
+            const CardRecord = Immutable.Record(
+                Object.assign({}, action.payload, {
+                    id: action.payload._id,
+                    _id: undefined,
+                    tasks: Immutable.List()
+                })
+            );
             return state.push(new CardRecord());
             
-        case UPDATE_CARD:
+        case REMOVE_CARD_SUCCESS:
+            cardIndex = state.findIndex(
+                (c) => c.get('id') === action.payload
+            );
+            
+            return state.delete(cardIndex);   
+            
+        case UPDATE_CARD_SUCCESS:
             card = action.payload;
             cardIndex = state.findIndex(
                 (c) => c.get('id') === card.id
@@ -139,12 +184,6 @@ export function reduce(state=createInitialState(),action){
                  .setIn([cardIndex, 'description'], card.description)
                  .setIn([cardIndex, 'status'], card.status);
             
-        case REMOVE_CARD:
-            cardId = action.payload;
-            cardIndex = state.findIndex(
-                (c) => c.get('id') === cardId
-            );
-            return state.delete(cardIndex);
             
         default:
             return state;

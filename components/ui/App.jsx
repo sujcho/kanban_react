@@ -7,6 +7,10 @@ import '../../index.scss';
 
 
 export default class App extends React.Component {
+    componentDidMount() {
+        this.props.fetchCards()
+    }
+    
     render() {
         return (
             <div>
