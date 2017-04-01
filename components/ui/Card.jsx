@@ -19,15 +19,15 @@ export default class Card extends React.Component {
      * For tasks
      **/
     handleAddTask(taskName) {
-        this.props.addTask(this.props.id, taskName);
+        this.props.addTask(this.props.card_id, taskName);
     }
     
     handleToggleTask(taskId) {
-        this.props.toggleTask(this.props.id, taskId);
+        this.props.toggleTask(this.props.card_id, taskId);
     }
     
     handleRemoveTask(taskId) {
-        this.props.removeTask(this.props.id, taskId);
+        this.props.removeTask(this.props.card_id, taskId);
     }
     
     /*Toggle the value of showDetail on click*/
